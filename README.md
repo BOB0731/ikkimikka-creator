@@ -21,7 +21,7 @@
 
 ## 自然腿型与鞋子动作
 
-可选 `--motion natural`：以大腿—膝盖—小腿—脚踝的完整连接生成六帧动作，保持鞋型。默认等比完整保留轮廓，避免顶部裁掉膝盖；比例不合适时重画素材。缺图会在输出前明确报错。缺少上半身服装参考时默认 JK 制服，已有服装与鞋袜保持原设定。参见 [自然步态说明](references/natural-motion.md) 与 [解剖及服装规则](references/anatomy-and-outfit.md)。
+可选 `--motion natural`：按动作参考只画膝下小腿、脚踝和鞋，膝盖与大腿在画外；通过小腿轻微倾斜及踝部转动生成六帧动作，保持鞋型。默认等比完整保留素材轮廓；比例不合适时重新构图生图。缺图会在输出前明确报错。缺少上半身服装参考时默认 JK 制服，已有服装与鞋袜保持原设定。参见 [自然步态说明](references/natural-motion.md) 与 [小腿构图及服装规则](references/anatomy-and-outfit.md)。
 
 回归检查：`python -B -m unittest discover -s tests -v`。
 

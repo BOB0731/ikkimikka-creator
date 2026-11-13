@@ -257,7 +257,8 @@ def main():
                     help="natural requires all six front poses, retaining shoe proportions")
     ap.add_argument("--paw-fit", choices=["contain", "width"], default=None,
                     help="width scales paws uniformly to cell width and crops excess upper leg; "
-                         "defaults to contain to preserve knees; width may crop upper anatomy")
+                         "defaults to contain to preserve the supplied calf/ankle/shoe silhouette; "
+                         "width may crop the upper source")
     ap.add_argument("--missing", default="baseline", choices=["error", "baseline", "blank"],
                     help="what to do when a frame file is absent")
     ap.add_argument("--deliver", action="store_true",

@@ -82,8 +82,8 @@ class NaturalMotionTests(unittest.TestCase):
                 for x in range(left, right):
                     pixels[(y * w + x) * 4:(y * w + x) * 4 + 4] = bytes((30 + i, 70, 120, 255))
             if tall_front and name == 'front_0':
-                # Mark a visible knee high in a tall source. Width cropping
-                # removes it; preserving the complete silhouette must keep it.
+                # Mark a source detail high in a tall image. Width cropping
+                # removes it; the default contain fit must keep it.
                 for y in range(40, 56):
                     for x in range(40, 60):
                         pixels[(y * w + x) * 4:(y * w + x) * 4 + 4] = bytes((240, 20, 20, 255))
@@ -125,14 +125,14 @@ class NaturalMotionTests(unittest.TestCase):
         self.assertEqual(report['options']['paw_fit'], 'contain')
         self.assertEqual(report['cells']['front_1']['status'], 'reused:front_0')
 
-    def test_natural_default_preserves_knee_in_tall_source(self):
+    def test_natural_default_preserves_source_details(self):
         result, _ = self.build(tall_front=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         w, h, sheet = png.read_png(str(self.root / 'custom.png'))
         cell = png.crop(sheet, w, h, *CELLS['front_0'])
-        knee_pixels = sum(cell[i] > 200 and cell[i + 1] < 40 and cell[i + 3] > 200
+        marker_pixels = sum(cell[i] > 200 and cell[i + 1] < 40 and cell[i + 3] > 200
                           for i in range(0, len(cell), 4))
-        self.assertGreater(knee_pixels, 5, 'The compositor cropped the knee out')
+        self.assertGreater(marker_pixels, 5, 'The compositor cropped source details out')
 
     def test_natural_validation_does_not_demand_squashed_shoes(self):
         result, _ = self.build()
