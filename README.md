@@ -21,7 +21,7 @@
 
 ## 自然腿型与鞋子动作
 
-新增可选 `--motion natural`：保留鞋型，逐帧画出脚踝动作；默认按宽等比合成，避免高挑素材把鞋子缩得过小。需要完整六张前脚帧，缺图会在输出前明确报错。默认 classic 保持兼容。参见 [自然步态说明](references/natural-motion.md)。
+可选 `--motion natural`：以大腿—膝盖—小腿—脚踝的完整连接生成六帧动作，保持鞋型。默认等比完整保留轮廓，避免顶部裁掉膝盖；比例不合适时重画素材。缺图会在输出前明确报错。缺少上半身服装参考时默认 JK 制服，已有服装与鞋袜保持原设定。参见 [自然步态说明](references/natural-motion.md) 与 [解剖及服装规则](references/anatomy-and-outfit.md)。
 
 回归检查：`python -B -m unittest discover -s tests -v`。
 

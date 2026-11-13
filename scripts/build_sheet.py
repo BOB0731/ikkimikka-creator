@@ -257,7 +257,7 @@ def main():
                     help="natural requires all six front poses, retaining shoe proportions")
     ap.add_argument("--paw-fit", choices=["contain", "width"], default=None,
                     help="width scales paws uniformly to cell width and crops excess upper leg; "
-                         "defaults to width for natural motion, contain for classic")
+                         "defaults to contain to preserve knees; width may crop upper anatomy")
     ap.add_argument("--missing", default="baseline", choices=["error", "baseline", "blank"],
                     help="what to do when a frame file is absent")
     ap.add_argument("--deliver", action="store_true",
@@ -279,7 +279,7 @@ def main():
                          "(default: empty list, which removes them)")
     ap.set_defaults(make_zip=True)
     args = ap.parse_args()
-    args.paw_fit = args.paw_fit or ("width" if args.motion == "natural" else "contain")
+    args.paw_fit = args.paw_fit or "contain"
 
     if args.out is None:
         # Debug runs default to the system temp dir so the desktop stays clean;

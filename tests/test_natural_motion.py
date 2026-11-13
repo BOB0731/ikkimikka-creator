@@ -62,13 +62,15 @@ class NaturalMotionTests(unittest.TestCase):
         self.assertEqual(cell[3], 0)
         self.assertGreater(cell[(128 * 160 + 80) * 4 + 3], 240)
 
-    def build(self, omit=None, motion='natural'):
+    def build(self, omit=None, motion='natural', tall_front=False):
         frames = self.root / 'frames'
         frames.mkdir()
         for i, name in enumerate(CELLS):
             if name == omit:
                 continue
             w, h = (80, 128) if name.startswith(('front_', 'back_')) else (64, 64)
+            if tall_front and name == 'front_0':
+                h = 400
             pixels = png.blank(w, h)
             for y in range(h):
                 if name.startswith(('front_', 'back_')):
@@ -79,6 +81,12 @@ class NaturalMotionTests(unittest.TestCase):
                     left, right = w // 4 + inset, w * 3 // 4 - inset
                 for x in range(left, right):
                     pixels[(y * w + x) * 4:(y * w + x) * 4 + 4] = bytes((30 + i, 70, 120, 255))
+            if tall_front and name == 'front_0':
+                # Mark a visible knee high in a tall source. Width cropping
+                # removes it; preserving the complete silhouette must keep it.
+                for y in range(40, 56):
+                    for x in range(40, 60):
+                        pixels[(y * w + x) * 4:(y * w + x) * 4 + 4] = bytes((240, 20, 20, 255))
             png.write_png(str(frames / (name + '.png')), w, h, pixels)
         base = png.blank(1024, 1024)
         for x, y, w, h in DECOR.values():
@@ -102,7 +110,7 @@ class NaturalMotionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         report = json.loads((self.root / 'custom.report.json').read_text(encoding='utf-8'))
         self.assertEqual(report['options']['motion'], 'natural')
-        self.assertEqual(report['options']['paw_fit'], 'width')
+        self.assertEqual(report['options']['paw_fit'], 'contain')
         self.assertTrue(report['must_generate']['front_1'])
         self.assertTrue(report['must_generate']['front_2'])
         self.assertTrue(report['must_generate']['front_4'])
@@ -116,6 +124,15 @@ class NaturalMotionTests(unittest.TestCase):
         report = json.loads((self.root / 'custom.report.json').read_text(encoding='utf-8'))
         self.assertEqual(report['options']['paw_fit'], 'contain')
         self.assertEqual(report['cells']['front_1']['status'], 'reused:front_0')
+
+    def test_natural_default_preserves_knee_in_tall_source(self):
+        result, _ = self.build(tall_front=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        w, h, sheet = png.read_png(str(self.root / 'custom.png'))
+        cell = png.crop(sheet, w, h, *CELLS['front_0'])
+        knee_pixels = sum(cell[i] > 200 and cell[i + 1] < 40 and cell[i + 3] > 200
+                          for i in range(0, len(cell), 4))
+        self.assertGreater(knee_pixels, 5, 'The compositor cropped the knee out')
 
     def test_natural_validation_does_not_demand_squashed_shoes(self):
         result, _ = self.build()

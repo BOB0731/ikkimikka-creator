@@ -21,6 +21,8 @@ description: 当用户要求把 OC 角色做成 STOMPGAME（ikkimikka.net/stompg
 
 ## 动作模式选择（先于下面的经典首版流程）
 
+先读取 [references/anatomy-and-outfit.md](references/anatomy-and-outfit.md)：自然人腿必须包含画面内可辨认的膝盖、膝上大腿段、完整小腿及脚踝，不能只生成孤立小腿。缺少上半身服装参考时默认 JK 制服；已有服装参考时沿用原服装。该规则也适用于后续补图与重画，必须写进本次实际发送的生图提示词。
+
 用户参考真人腿/鞋动作、要求自然腿型或指出动作僵硬时，读取 [references/natural-motion.md](references/natural-motion.md)，使用 natural 模式及完整六张前脚帧。该模式的姿态、生成数量和鞋子受力规则优先于下面经典 9 张首版及 C2/C3 中的夸张压扁要求。服装仍取原角色图；动作参考不改变角色身份。
 
 ## 工作流
